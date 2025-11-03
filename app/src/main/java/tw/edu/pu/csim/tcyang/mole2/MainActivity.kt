@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import tw.edu.pu.csim.tcyang.mole2.ui.theme.Mole2Theme
 
 class MainActivity : ComponentActivity() {
@@ -41,38 +42,24 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 
-fun MoleScreen() {
+fun MoleScreen(moleViewModel: MoleViewModel = viewModel()) {
 
-    var counter by rememberSaveable { mutableLongStateOf(0) }
-
+    val counter = moleViewModel.counter
+    //var counter by rememberSaveable { mutableLongStateOf(0) }
     Box (
-
         modifier = Modifier.fillMaxSize(),
-
         Alignment.Center
-
     ) {
-
         Text(counter.toString())
-
     }
-
     Image(
-
         painter = painterResource(id = R.drawable.mole),
-
         contentDescription = "地鼠",
-
         modifier = Modifier
-
             .offset { IntOffset(600, 800) }
-
             .size(150.dp)
-
-            .clickable { counter++ }
-
+            .clickable { moleViewModel.incrementCounter()}
     )
-
 }
 
 fun remember(function: Any) {
