@@ -21,6 +21,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -39,33 +41,35 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
-
 fun MoleScreen(moleViewModel: MoleViewModel = viewModel()) {
-
-    val counter = moleViewModel.counter
+    val counter =  moleViewModel.counter
     val stay = moleViewModel.stay
 
-    //var counter by rememberSaveable { mutableLongStateOf(0) }
+    val density = LocalDensity.current
 
-    Box (
-        modifier = Modifier.fillMaxSize(),
+    val moleSizeDp = 150.dp
+    val moleSizePx = with(density) { moleSizeDp.roundToPx() }
+
+
+    //var counter by rememberSaveable { mutableLongStateOf(0) }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged { intSize ->  // 用來獲取全螢幕尺寸px
+                moleViewModel.getArea(intSize, moleSizePx) },
         Alignment.Center
     ) {
         Text("分數: $counter \n時間: $stay")
-
     }
+
     Image(
         painter = painterResource(id = R.drawable.mole),
         contentDescription = "地鼠",
         modifier = Modifier
-            .offset { IntOffset(600, 800) }
-            .size(150.dp)
-            .clickable { moleViewModel.incrementCounter()}
+            .offset { IntOffset(moleViewModel.offsetX, moleViewModel.offsetY) }
+            .size(moleSizeDp)
+            .clickable { moleViewModel.incrementCounter() }
     )
-}
 
-fun remember(function: Any) {
-    TODO("Not yet implemented")
 }
